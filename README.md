@@ -35,5 +35,7 @@ Welcome to L'Art du Style - a Django-based web application that helps users test
 ## :link: Associated Links:
 
 **[TRELLO](https://trello.com/invite/b/YNOmug6P/ATTI4962d7f8e6953edeabe7a6124f49a00b410FB9C7/lart-du-style)**
+/
 **[Wireframe](https://whimsical.com/wireframe-X1qVJ6RKy1Aw2EboRopKNd)**
+/
 **[ERD](https://whimsical.com/erd-EAAHEkc3FiN56FSpNYiW5U)**

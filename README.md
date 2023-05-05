@@ -29,7 +29,7 @@
 
 ### Description:
 
-Welcome to L'Art du Style - a Django-based web application that helps users test their fashion sense by allowing them to upload photos of their clothing items and see if they match. Our app uses advanced algorithms to suggest matching outfits, and provides users with a seamless experience. L'Art du Style is the ultimate tool for those looking to elevate their fashion game and make sure their outfits always look stylish and put-together.
+Welcome to L'Art du Style - a Django-based web application that helps users test their fashion sense by allowing them to upload photos of their clothing items and see if they match. L'Art du Style is the ultimate tool for those looking to elevate their fashion game and make sure their outfits always look stylish and put-together.
 
 ## :link: Associated Links:
 

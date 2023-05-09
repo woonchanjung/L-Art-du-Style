@@ -8,6 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 # Import the mixin for class-based views
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
+from .models import ClothingItem
 
 # Create your views here.
 
@@ -22,6 +24,13 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+def clothes_index(request):
+    clothes = Clothes.objects.filter(user=request.user)
+    # You could also retrieve the logged in user's cats like this
+    # cats = request.user.cat_set.all()
+    return render(request, 'clothes/index.html', {
+        'clothes': clothes
+    })
 
 def signup(request):
     error_message = ''
@@ -34,7 +43,7 @@ def signup(request):
             user = form.save()
             # This is how we log a user in via code
             login(request, user)
-            return redirect('')
+            return redirect('index')
         else:
             error_message = 'Invalid sign up - try again'
     # A bad POST or a GET request, so render signup.html with an empty form
@@ -42,3 +51,32 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
+def upload_photo(request, item_id):
+    if request.method == 'POST':
+        item = ClothingItem.objects.get(pk=item_id)
+        top_photo = request.FILES['top_photo']
+        bottom_photo = request.FILES['bottom_photo']
+
+        # Upload top photo to S3
+        s3 = boto3.client('s3',
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME
+        )
+        top_photo_key = f'top/{item.id}.jpg'
+        s3.upload_fileobj(top_photo, settings.AWS_STORAGE_BUCKET_NAME, top_photo_key)
+
+        # Upload bottom photo to S3
+        bottom_photo_key = f'bottom/{item.id}.jpg'
+        s3.upload_fileobj(bottom_photo, settings.AWS_STORAGE_BUCKET_NAME, bottom_photo_key)
+
+        # Update the item's photo URLs
+        item.top_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{top_photo_key}'
+        item.bottom_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{bottom_photo_key}'
+        item.save()
+
+        return redirect('item_detail', item_id=item.id)
+
+    item = ClothingItem.objects.get(pk=item_id)
+    context = {'item': item}
+    return render(request, 'myapp/upload_photo.html', context)

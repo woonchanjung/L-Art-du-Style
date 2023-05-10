@@ -10,3 +10,19 @@ from django.contrib.auth.models import User
 
 #     def __str__(self):
 #         return f"Photo for cat_id: {self.cat_id} @{self.url}"
+
+class Top(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='top_images/')
+    color = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Bottom(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='bottom_images/')
+    color = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name

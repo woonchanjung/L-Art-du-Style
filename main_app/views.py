@@ -1,6 +1,7 @@
 import os
 import uuid
 import boto3
+import logging
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
@@ -9,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 # Import the mixin for class-based views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
-from .models import ClothingItem
+from .models import Clothes, ClothingItem
 
 # Create your views here.
 
@@ -51,9 +52,9 @@ def signup(request):
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
-def upload_photo(request, item_id):
+def upload_photo(request, clothe_id):
     if request.method == 'POST':
-        item = ClothingItem.objects.get(pk=item_id)
+        clothe = ClothingItem.objects.get(pk=clothe_id)
         top_photo = request.FILES['top_photo']
         bottom_photo = request.FILES['bottom_photo']
 
@@ -63,20 +64,20 @@ def upload_photo(request, item_id):
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             region_name=settings.AWS_S3_REGION_NAME
         )
-        top_photo_key = f'top/{item.id}.jpg'
+        top_photo_key = f'top/{clothe.id}.jpg'
         s3.upload_fileobj(top_photo, settings.AWS_STORAGE_BUCKET_NAME, top_photo_key)
 
         # Upload bottom photo to S3
-        bottom_photo_key = f'bottom/{item.id}.jpg'
+        bottom_photo_key = f'bottom/{clothe.id}.jpg'
         s3.upload_fileobj(bottom_photo, settings.AWS_STORAGE_BUCKET_NAME, bottom_photo_key)
 
-        # Update the item's photo URLs
-        item.top_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{top_photo_key}'
-        item.bottom_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{bottom_photo_key}'
-        item.save()
+        # Update the clothe's photo URLs
+        clothe.top_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{top_photo_key}'
+        clothe.bottom_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{bottom_photo_key}'
+        clothe.save()
 
-        return redirect('item_detail', item_id=item.id)
+        return redirect('clothe_detail', clothe_id=clothe.id)
 
-    item = ClothingItem.objects.get(pk=item_id)
-    context = {'item': item}
+    clothe = ClothingItem.objects.get(pk=clothe_id)
+    context = {'clothe': clothe}
     return render(request, 'myapp/upload_photo.html', context)

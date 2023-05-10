@@ -17,6 +17,8 @@
       href="{% static 'css/style.css' %}"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/js/bootstrap.bundle.min.js"></script>
   </head>
   <body>
     <header class="navbar-fixed">
@@ -32,10 +34,9 @@
           <ul class="right">
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
-            {% comment %} <li><a href="{% url 'toys_create' %}">Add a Toy</a></li>
-            <li><a href="{% url 'toys_index' %}">View All Toys</a></li>
-            <li><a href="{% url 'cats_create' %}">Add a Cat</a></li>
-            <li><a href="{% url 'index' %}">View All My Cats</a></li> {% endcomment %}
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'upload_top' %}">Upload Top</a></li>
+            <li><a href="{% url 'upload_bottom' %}">Upload Bottom</a></li>
             <li><a href="{% url 'logout' %}">Log Out</a></li>
             {% else %}
             <!-- New Sign Up link -->

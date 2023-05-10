@@ -1,45 +1,33 @@
 {% extends 'base.html' %} {% block content %}
 
-<h1>Clothe List</h1>
+<h1>Welcome to L'Art du Style</h1>
+<p>Discover the perfect combination of top and bottom clothing items.</p>
 
-{% for clothe in clothes %}
-<div class="card">
-  <div class="card-content">
-    <span class="card-title">{{ clothe.name }}</span>
-    <p>Brand: {{ clothe.brand }}</p>
-    <p>Description: {{ cat.description }}</p>
-    {% comment %} {% if clothe.age > 0 %}
-    <p>Age: {{ clothe.age }}</p>
-    {% else %}
-    <p>Age: Kitten</p>
-    {% endif %} {% endcomment %}
-  </div>
-</div>
+<h1>My Closet</h1>
+    {% if tops %}
+        <h2>Tops:</h2>
+        <div>
+            {% for top in tops %}
+                <div class="clothing-item">
+                    <img src="{{ top.image.url }}" alt="Top Image" width="200">
+                    <p>{{ top }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if bottoms %}
+        <h2>Bottoms:</h2>
+        <div>
+            {% for bottom in bottoms %}
+                <div class="clothing-item">
+                    <img src="{{ bottom.image.url }}" alt="Bottom Image" width="200">
+                    <p>{{ bottom }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-<h2>Upload photos for {{ item.name }}</h2>
-
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="form-group">
-    <label for="top_photo">Top photo:</label>
-    <input
-      type="file"
-      name="top_photo"
-      id="top_photo"
-      class="form-control-file"
-      required
-    />
-  </div>
-  <div class="form-group">
-    <label for="bottom_photo">Bottom photo:</label>
-    <input
-      type="file"
-      name="bottom_photo"
-      id="bottom_photo"
-      class="form-control-file"
-      required
-    />
-  </div>
-  <button type="submit" class="btn btn-primary">Upload</button>
-</form>
-{% endfor %} {% endblock %}
+<a href="{% url 'upload_top' %}">Upload Top</a>
+<a href="{% url 'upload_bottom' %}">Upload Bottom</a>
+{% endblock %}

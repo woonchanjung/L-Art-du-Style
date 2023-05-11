@@ -1,8 +1,16 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Upload Bottoms</h1>
-<form method="post" enctype="multipart/form-data">
+<form
+  action="{% url 'upload_bottom' %}"
+  enctype="multipart/form-data"
+  method="POST"
+  class="card-panel"
+>
   {% csrf_token %}
-  <input type="file" name="bottom_images" multiple />
+
+  <label for="id_image">Image:</label>
+  <input type="file" name="image" id="id_image" />
+
   <button type="submit">Upload</button>
 </form>
 

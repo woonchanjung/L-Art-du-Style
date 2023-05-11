@@ -1,0 +1,39 @@
+{% comment %} {% extends 'base.html' %} {% block content %}
+<h1>Create Match</h1>
+{% if tops %} {% if bottoms %}
+<form method="post">
+  {% csrf_token %}
+  <select name="top_id">
+    {% for top in tops %}
+    <option value="{{ top.id }}">{{ top }}</option>
+    {% endfor %}
+  </select>
+  <select name="bottom_id">
+    {% for bottom in bottoms %}
+    <option value="{{ bottom.id }}">{{ bottom }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Create Match</button>
+</form>
+<h2>Uploaded Tops:</h2>
+<ul>
+  {% for top in tops %}
+  <li><img src="{{ top.image.url }}" alt="Top Image" width="200" /></li>
+  {% endfor %}
+</ul>
+<h2>Uploaded Bottoms:</h2>
+<ul>
+  {% for bottom in bottoms %}
+  <li><img src="{{ bottom.image.url }}" alt="Bottom Image" width="200" /></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No bottoms available. Please upload bottoms to create a match.</p>
+{% endif %} {% else %} {% if bottoms %}
+<p>No tops available. Please upload tops to create a match.</p>
+{% else %}
+<p>
+  No tops or bottoms available. Please upload tops and bottoms to create a
+  match.
+</p>
+{% endif %} {% endif %}{% endblock %} {% endcomment %}

@@ -1,0 +1,12 @@
+{% comment %} {% extends 'base.html' %} {% block content %}
+  <h2>View Matches</h2>
+  {% if matches %}
+    <ul class="match-list">
+      {% for match in matches %}
+        <li>{{ match }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No matches found.</p>
+  {% endif %}
+{% endblock %} {% endcomment %}

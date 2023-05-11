@@ -1,8 +1,16 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Upload Top</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="top_images" multiple>
-    <button type="submit">Upload</button>
+<form
+  action="{% url 'upload_top' %}"
+  enctype="multipart/form-data"
+  method="POST"
+  class="card-panel"
+>
+  {% csrf_token %}
+
+  <label for="id_image">Image:</label>
+  <input type="file" name="image" id="id_image" />
+
+  <button type="submit">Upload</button>
 </form>
 {% endblock %}

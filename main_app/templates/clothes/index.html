@@ -10,30 +10,31 @@
   <div class="clothing-item">
     <img src="{{ top.image }}" alt="Top Image" width="200" />
     <p>{{ top }}</p>
-  </div>
-  <div>
-    <p>{{ top }}</p>
-    <form action="{% url 'delete_top' top.pk %}" method="post">
-      {% csrf_token %}
-      <input type="submit" value="Delete Top" />
-    </form>
+    <div>
+      <a href="{% url 'edit_top' top.pk %}">Edit</a>
+      <form action="{% url 'delete_top' top.pk %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type="submit" value="Delete" />
+      </form>
+    </div>
   </div>
   {% endfor %}
 </div>
-{% endif %} {% if bottoms %}
+{% endif %} 
+{% if bottoms %}
 <h2>Bottoms:</h2>
 <div>
   {% for bottom in bottoms %}
   <div class="clothing-item">
     <img src="{{ bottom.image }}" alt="Bottom Image" width="200" />
     <p>{{ bottom }}</p>
-  </div>
-  <div>
-    <p>{{ bottom }}</p>
-    <form action="{% url 'delete_bottom' bottom.pk %}" method="post">
-      {% csrf_token %}
-      <input type="submit" value="Delete Bottom" />
-    </form>
+    <div>
+      <a href="{% url 'edit_bottom' bottom.pk %}">Edit</a>
+      <form action="{% url 'delete_bottom' bottom.pk %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <input type="submit" value="Delete" />
+      </form>
+    </div>
   </div>
   {% endfor %}
 </div>

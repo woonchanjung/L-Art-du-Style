@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Edit Top</h1>
+  <div>
+      <img src="{{ top.image }}" alt="Top Image" width="200">
+    </a>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label for="id_name">Name:</label>
+      <input type="text" id="id_name" name="name" value="{{ top.name }}">
+    </div>
+    <input type="submit" value="Save Changes">
+  </form>
+{% endblock %}

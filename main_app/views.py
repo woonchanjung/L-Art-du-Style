@@ -8,8 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 # Import the login_required decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .forms import TopForm, BottomForm 
-from .models import Top, Bottom, Match  
+from .forms import TopForm, BottomForm
+from .models import Top, Bottom, Match
 # Create your views here.
 
 # Define the home view
@@ -110,7 +110,7 @@ def create_match(request):
 
             match = Match(user=request.user, top=top, bottom=bottom)
             match.save()
-            
+
             return redirect('view_matches')
         else:
             tops = Top.objects.filter(user=request.user)
@@ -180,9 +180,37 @@ def delete_bottom(request, bottom_id):
         bottom.delete()
     return redirect('index')
 
+
 @login_required
 def delete_match(request, match_id):
     if request.method == 'POST':
         match = Match.objects.get(pk=match_id)
         match.delete()
         return redirect('view_matches')
+
+
+@login_required
+def edit_top(request, top_id):
+    top = get_object_or_404(Top, id=top_id, user=request.user)
+    if request.method == 'POST':
+        form = TopForm(request.POST, request.FILES, instance=top)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = TopForm(instance=top)
+    return render(request, 'clothes/edit_top.html', {'form': form, 'top': top})
+
+
+@login_required
+def edit_bottom(request, bottom_id):
+    bottom = get_object_or_404(Bottom, id=bottom_id, user=request.user)
+    if request.method == 'POST':
+        form = BottomForm(request.POST, instance=bottom)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = BottomForm(instance=bottom)
+    return render(request, 'clothes/edit_bottom.html', {'form': form, 'bottom': bottom})
+

@@ -13,4 +13,6 @@ urlpatterns = [
     path('clothes/<int:top_id>/delete_top/', views.delete_top, name='delete_top'),
     path('clothes/<int:bottom_id>/delete_buttom/', views.delete_bottom, name='delete_bottom'),
     path('matches/<int:match_id>/delete/', views.delete_match, name='delete_match'),
+    path('clothes/<int:top_id>/edit_top/', views.edit_top, name='edit_top'),
+    path('clothes/<int:bottom_id>/edit_buttom/', views.edit_bottom, name='edit_bottom'),
 ]

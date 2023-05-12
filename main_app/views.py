@@ -8,8 +8,8 @@ from django.contrib.auth.forms import UserCreationForm
 # Import the login_required decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .forms import TopForm, BottomForm, MatchForm
-from .models import Top, Bottom, Match
+from .forms import TopForm, BottomForm 
+from .models import Top, Bottom, Match  
 # Create your views here.
 
 # Define the home view
@@ -103,26 +103,28 @@ def create_match(request):
 
     if user_tops.exists() and user_bottoms.exists():
         if request.method == 'POST':
-            form = MatchForm(request.POST, user=request.user)
-            if form.is_valid():
-                match = form.save(commit=False)
-                match.user = request.user
-                match.save()
-                form.save_m2m()
-                return redirect('view_matches')
+            top_id = request.POST.get('top')
+            bottom_id = request.POST.get('bottom')
+            top = get_object_or_404(Top, id=top_id)
+            bottom = get_object_or_404(Bottom, id=bottom_id)
+
+            match = Match(user=request.user, top=top, bottom=bottom)
+            match.save()
+            
+            return redirect('view_matches')
         else:
-            form = MatchForm(user=request.user)
-        return render(request, 'clothes/create_match.html', {'form': form})
+            tops = Top.objects.filter(user=request.user)
+            bottoms = Bottom.objects.filter(user=request.user)
+            return render(request, 'clothes/create_match.html', {'tops': tops, 'bottoms': bottoms})
     else:
         message = "Please upload at least one top and one bottom to create a match."
         return render(request, 'clothes/create_match.html', {'message': message})
 
 
-
 @login_required
-def view_matches(request):
+def view_matches(request, message=None):
     matches = Match.objects.filter(user=request.user)
-    return render(request, 'clothes/view_matches.html', {'matches': matches})
+    return render(request, 'clothes/view_matches.html', {'matches': matches, 'message': message})
 
 
 def signup(request):
@@ -177,3 +179,10 @@ def delete_bottom(request, bottom_id):
             print(e)
         bottom.delete()
     return redirect('index')
+
+@login_required
+def delete_match(request, match_id):
+    if request.method == 'POST':
+        match = Match.objects.get(pk=match_id)
+        match.delete()
+        return redirect('view_matches')

@@ -1,16 +1,49 @@
-{% extends 'base.html' %}
-
+{% extends 'base.html' %} 
 {% block content %}
   <h1>Create a Match</h1>
 
   {% if message %}
     <p>{{ message }}</p>
   {% else %}
-    <form method="POST">
-    {% csrf_token %}
-      {{ form.as_p }}
-      
-      <button type="submit" class="btn btn-primary">Create Match</button>
+    <form method="post">
+      {% csrf_token %}
+      <h2>Select a Top:</h2>
+      <p id="selected-top">No top selected.</p>
+      <p>Tops count: {{ tops.count }}</p>
+      {% for top in tops %}
+        <div class="clothing-item">
+          <label>
+            <input type="radio" id="top{{ top.pk }}" name="top" value="{{ top.pk }}" onclick="selectTop('Top #{{ top.pk }}')">
+            <img src="{{ top.image }}" alt="Top Image" width="200">
+            {{ top }}
+          </label>
+        </div>
+      {% endfor %}
+
+      <h2>Select a Bottom:</h2>
+      <p id="selected-bottom">No bottom selected.</p>
+      <p>Bottoms count: {{ bottoms.count }}</p>
+      {% for bottom in bottoms %}
+        <div class="clothing-item">
+          <label>
+            <input type="radio" id="bottom{{ bottom.pk }}" name="bottom" value="{{ bottom.pk }}" onclick="selectBottom('Bottom #{{ bottom.pk }}')">
+            <img src="{{ bottom.image }}" alt="Bottom Image" width="200">
+            {{ bottom }}
+          </label>
+        </div>
+      {% endfor %}
+
+      <input type="submit" value="Create Match">
     </form>
   {% endif %}
+
+  <script>
+    function selectTop(top) {
+      document.getElementById('selected-top').innerText = 'Selected: ' + top;
+    }
+
+    function selectBottom(bottom) {
+      document.getElementById('selected-bottom').innerText = 'Selected: ' + bottom;
+    }
+  </script>
 {% endblock %}

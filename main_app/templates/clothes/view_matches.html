@@ -21,8 +21,17 @@
       </div>
     </div>
   </li>
+  <div>
+    <p>{{ match }}</p>
+    <form action="{% url 'delete_match' match.pk %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete Match">
+    </form>
+</div>
+
   {% endfor %}
 </ul>
 {% else %}
 <p>No matches found.</p>
-{% endif %} {% endblock %}
+{% endif %} 
+{% endblock %}

@@ -1,35 +1,35 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} 
+{% block content %}
+  <h1>Welcome to L'Art du Style</h1>
+  <p>Discover the perfect combination of top and bottom clothing items.</p>
 
-<h1>Welcome to L'Art du Style</h1>
-<p>Discover the perfect combination of top and bottom clothing items.</p>
-
-<h1>My Closet</h1>
-    {% if tops %}
-        <h2>Tops:</h2>
-        <div>
-            {% for top in tops %}
-                <div class="clothing-item">
-                    <img src="{{ top.image.url }}" alt="Top Image" width="200">
-                    <p>{{ top }}</p>
-                </div>
-            {% endfor %}
+  <h1>My Closet</h1>
+  {% if tops %}
+    <h2>Tops:</h2>
+    <div>
+      {% for top in tops %}
+        <div class="clothing-item">
+          <img src="{{ top.image }}" alt="Top Image" width="200">
+          <p>{{ top }}</p>
         </div>
-    {% endif %}
-    
-    {% if bottoms %}
-        <h2>Bottoms:</h2>
-        <div>
-            {% for bottom in bottoms %}
-                <div class="clothing-item">
-                    <img src="{{ bottom.image.url }}" alt="Bottom Image" width="200">
-                    <p>{{ bottom }}</p>
-                </div>
-            {% endfor %}
+      {% endfor %}
+    </div>
+  {% endif %}
+  
+  {% if bottoms %}
+    <h2>Bottoms:</h2>
+    <div>
+      {% for bottom in bottoms %}
+        <div class="clothing-item">
+          <img src="{{ bottom.image }}" alt="Bottom Image" width="200">
+          <p>{{ bottom }}</p>
         </div>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
 
-    <a href="{% url 'upload_top' %}">Upload Top</a>/
-    <a href="{% url 'upload_bottom' %}">Upload Bottom</a>/
-    <a href="{% url 'create_match' %}">Create Match</a>/
-    <a href="{% url 'view_matches' %}">View Matches</a>
+  <a href="{% url 'upload_top' %}">Upload Top</a>/
+  <a href="{% url 'upload_bottom' %}">Upload Bottom</a>/
+  <a href="{% url 'create_match' %}">Create Match</a>/
+  <a href="{% url 'view_matches' %}">View Matches</a>
 {% endblock %}

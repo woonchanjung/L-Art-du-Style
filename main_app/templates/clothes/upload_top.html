@@ -1,5 +1,18 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Upload Top</h1>
+
+{% if tops %}
+<h2>Tops:</h2>
+<div>
+  {% for top in tops %}
+  <div class="clothing-item">
+    <img src="{{ top.image }}" alt="Top Image" width="200" />
+    <p>{{ top }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <form
   action="{% url 'upload_top' %}"
   enctype="multipart/form-data"

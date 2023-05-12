@@ -34,7 +34,7 @@
           <ul class="right">
             <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
-            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'index' %}">My Closet</a></li>
             <li><a href="{% url 'upload_top' %}">Upload Top</a></li>
             <li><a href="{% url 'upload_bottom' %}">Upload Bottom</a></li>
             <li><a href="{% url 'create_match' %}">Create Match</a></li>

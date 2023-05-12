@@ -1,5 +1,18 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Upload Bottoms</h1>
+
+{% if bottoms %}
+<h2>Bottoms:</h2>
+<div>
+  {% for bottom in bottoms %}
+  <div class="clothing-item">
+    <img src="{{ bottom.image }}" alt="Bottom Image" width="200" />
+    <p>{{ bottom }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <form
   action="{% url 'upload_bottom' %}"
   enctype="multipart/form-data"
@@ -9,7 +22,7 @@
   {% csrf_token %}
 
   <label for="id_image">Image:</label>
-  <input type="file" name="image" id="id_image" />
+  <input type="file" name="image" id="id_image" multiple />
 
   <button type="submit">Upload</button>
 </form>

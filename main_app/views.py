@@ -1,13 +1,14 @@
 import os
 import uuid
 import boto3
-from django.shortcuts import render, redirect
+import imghdr
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 # Import the login_required decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from .forms import TopForm, BottomForm
+from .forms import TopForm, BottomForm, MatchForm
 from .models import Top, Bottom, Match
 # Create your views here.
 
@@ -23,87 +24,104 @@ def about(request):
     return render(request, 'about.html')
 
 
+@login_required
 def index(request):
     tops = Top.objects.filter(user=request.user)
     bottoms = Bottom.objects.filter(user=request.user)
     return render(request, 'clothes/index.html', {'tops': tops, 'bottoms': bottoms})
 
 
+@login_required
 def upload_top(request):
     if request.method == 'POST':
         form = TopForm(request.POST, request.FILES)
         if form.is_valid():
             photo_files = request.FILES.getlist('image')
-            for photo_file in photo_files:
-                if photo_file:
-                    s3 = boto3.client('s3')
-                    key = uuid.uuid4(
-                    ).hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-                    try:
-                        bucket = os.environ['S3_BUCKET']
-                        s3.upload_fileobj(photo_file, bucket, key)
-                        url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-                        form.instance.user = request.user
-                        form.instance.image = url
-                        form.save()
-                    except Exception as e:
-                        print('An error occurred uploading file to S3')
-                        print(e)
-            return redirect('index')
+            if len(photo_files) > 0:
+                for photo_file in photo_files:
+                    if photo_file:
+                        if imghdr.what(photo_file) is not None:
+                            s3 = boto3.client('s3')
+                            key = f"tops/{uuid.uuid4().hex[:6]}{os.path.splitext(photo_file.name)[1]}"
+                            try:
+                                bucket = os.environ['S3_BUCKET']
+                                s3.upload_fileobj(photo_file, bucket, key)
+                                url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                                new_top = Top(user=request.user, image=url)
+                                new_top.save()
+                            except Exception as e:
+                                print('An error occurred uploading file to S3')
+                                print(e)
+                        else:
+                            form.add_error(
+                                'image', 'Please select an image file.')
+                return redirect('index')
+            else:
+                form.add_error('image', 'Please select at least one file.')
     else:
         form = TopForm()
     return render(request, 'clothes/upload_top.html', {'form': form})
 
 
+@login_required
 def upload_bottom(request):
     if request.method == 'POST':
         form = BottomForm(request.POST, request.FILES)
         if form.is_valid():
             photo_files = request.FILES.getlist('image')
-            for photo_file in photo_files:
-                if photo_file:
-                    s3 = boto3.client('s3')
-                    key = uuid.uuid4(
-                    ).hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-                    try:
-                        bucket = os.environ['S3_BUCKET']
-                        s3.upload_fileobj(photo_file, bucket, key)
-                        url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-                        form.instance.user = request.user
-                        form.instance.image = url
-                        form.save()
-                    except Exception as e:
-                        print('An error occurred uploading file to S3')
-                        print(e)
-            return redirect('index')
+            if len(photo_files) > 0:
+                for photo_file in photo_files:
+                    if photo_file:
+                        if imghdr.what(photo_file) is not None:
+                            s3 = boto3.client('s3')
+                            key = f"bottoms/{uuid.uuid4().hex[:6]}{os.path.splitext(photo_file.name)[1]}"
+                            try:
+                                bucket = os.environ['S3_BUCKET']
+                                s3.upload_fileobj(photo_file, bucket, key)
+                                url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+                                new_bottom = Bottom(
+                                    user=request.user, image=url)
+                                new_bottom.save()
+                            except Exception as e:
+                                print('An error occurred uploading file to S3')
+                                print(e)
+                        else:
+                            form.add_error(
+                                'image', 'Please select an image file.')
+                return redirect('index')
+            else:
+                form.add_error('image', 'Please select at least one file.')
     else:
         form = BottomForm()
     return render(request, 'clothes/upload_bottom.html', {'form': form})
 
 
+@login_required
 def create_match(request):
-    tops = Top.objects.filter(user=request.user)
-    bottoms = Bottom.objects.filter(user=request.user)
-    if tops.exists() and bottoms.exists():
+    user_tops = Top.objects.filter(user=request.user)
+    user_bottoms = Bottom.objects.filter(user=request.user)
+
+    if user_tops.exists() and user_bottoms.exists():
         if request.method == 'POST':
-            form = MatchForm(request.POST)
+            form = MatchForm(request.POST, user=request.user)
             if form.is_valid():
-                top_id = form.cleaned_data['top']
-                bottom_id = form.cleaned_data['bottom']
-                top = Top.objects.get(id=top_id)
-                bottom = Bottom.objects.get(id=bottom_id)
-                Match.objects.create(top=top, bottom=bottom, user=request.user)
+                match = form.save(commit=False)
+                match.user = request.user
+                match.save()
+                form.save_m2m()
                 return redirect('view_matches')
         else:
-            form = MatchForm()
-        return render(request, 'clothes/create_match.html', {'form': form, 'tops': tops, 'bottoms': bottoms})
+            form = MatchForm(user=request.user)
+        return render(request, 'clothes/create_match.html', {'form': form})
     else:
         message = "Please upload at least one top and one bottom to create a match."
         return render(request, 'clothes/create_match.html', {'message': message})
 
 
+
+@login_required
 def view_matches(request):
-    matches = Match.objects.all()
+    matches = Match.objects.filter(user=request.user)
     return render(request, 'clothes/view_matches.html', {'matches': matches})
 
 
@@ -127,34 +145,35 @@ def signup(request):
     return render(request, 'registration/signup.html', context)
 
 
-# def upload_photo(request, clothe_id):
-#     if request.method == 'POST':
-#         clothe = ClothingItem.objects.get(pk=clothe_id)
-#         top_photo = request.FILES['top_photo']
-#         bottom_photo = request.FILES['bottom_photo']
+@login_required
+def delete_top(request, top_id):
+    top = get_object_or_404(Top, id=top_id)
+    if request.user == top.user:
+        # Delete the image from S3
+        s3 = boto3.client('s3')
+        key = top.image.url.split('/')[-1]
+        bucket = os.environ['S3_BUCKET']
+        try:
+            s3.delete_object(Bucket=bucket, Key=key)
+        except Exception as e:
+            print('An error occurred deleting file from S3')
+            print(e)
+        top.delete()
+    return redirect('index')
 
-#         # Upload top photo to S3
-#         s3 = boto3.client('s3',
-#                           aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-#                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-#                           region_name=settings.AWS_S3_REGION_NAME
-#                           )
-#         top_photo_key = f'top/{clothe.id}.jpg'
-#         s3.upload_fileobj(
-#             top_photo, settings.AWS_STORAGE_BUCKET_NAME, top_photo_key)
 
-#         # Upload bottom photo to S3
-#         bottom_photo_key = f'bottom/{clothe.id}.jpg'
-#         s3.upload_fileobj(
-#             bottom_photo, settings.AWS_STORAGE_BUCKET_NAME, bottom_photo_key)
-
-#         # Update the clothe's photo URLs
-#         clothe.top_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{top_photo_key}'
-#         clothe.bottom_photo_url = f'https://{settings.AWS_S3_CUSTOM_DOMAIN}/{bottom_photo_key}'
-#         clothe.save()
-
-#         return redirect('clothe_detail', clothe_id=clothe.id)
-
-#     clothe = ClothingItem.objects.get(pk=clothe_id)
-#     context = {'clothe': clothe}
-#     return render(request, 'myapp/upload_photo.html', context)
+@login_required
+def delete_bottom(request, bottom_id):
+    bottom = get_object_or_404(Bottom, id=bottom_id)
+    if request.user == bottom.user:
+        # Delete the image from S3
+        s3 = boto3.client('s3')
+        key = bottom.image.url.split('/')[-1]
+        bucket = os.environ['S3_BUCKET']
+        try:
+            s3.delete_object(Bucket=bucket, Key=key)
+        except Exception as e:
+            print('An error occurred deleting file from S3')
+            print(e)
+        bottom.delete()
+    return redirect('index')

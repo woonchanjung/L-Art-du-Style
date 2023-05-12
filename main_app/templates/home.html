@@ -4,31 +4,4 @@
 <h1>Welcome to L'Art du Style</h1>
 <p>Discover the perfect combination of top and bottom clothing items.</p>
 
-<h2>Tops</h2>
-<ul>
-  {% for top in tops %}
-  <li>
-    <img src="{{ top.image.url }}" alt="Top Image" width="200" />
-  </li>
-  {% empty %}
-  <li>No tops uploaded yet.</li>
-  {% endfor %}
-</ul>
-
-<h2>Bottoms</h2>
-<ul>
-  {% for bottom in bottoms %}
-  <li>
-    <img src="{{ bottom.image.url }}" alt="Bottom Image" width="200" />
-  </li>
-  {% empty %}
-  <li>No bottoms uploaded yet.</li>
-  {% endfor %}
-</ul>
-
-<a href="{% url 'upload_top' %}">Upload Top</a>/
-<a href="{% url 'upload_bottom' %}">Upload Bottom</a>/
-<a href="{% url 'create_match' %}">Create Match</a>/
-<a href="{% url 'view_matches' %}">View Matches</a>
-
 {% endblock %}

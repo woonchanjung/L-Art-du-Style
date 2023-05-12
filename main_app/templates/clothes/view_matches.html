@@ -1,12 +1,28 @@
-{% comment %} {% extends 'base.html' %} {% block content %}
-  <h2>View Matches</h2>
-  {% if matches %}
-    <ul class="match-list">
-      {% for match in matches %}
-        <li>{{ match }}</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No matches found.</p>
-  {% endif %}
-{% endblock %} {% endcomment %}
+{% extends 'base.html' %} {% block content %}
+<h1>View Matches</h1>
+
+{% if matches %}
+<ul>
+  {% for match in matches %}
+  <li>
+    <h2>Match #{{ match.pk }}</h2>
+    <div class="match-item">
+      <div class="top-item">
+        <img src="{{ match.top.image }}" alt="Top Image" width="200" />
+        <p>{{ match.top }}</p>
+      </div>
+      <div class="bottom-item">
+        <img
+          src="{{ match.bottom.image }}"
+          alt="Bottom Image"
+          width="200"
+        />
+        <p>{{ match.bottom }}</p>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No matches found.</p>
+{% endif %} {% endblock %}

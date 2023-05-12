@@ -20,8 +20,8 @@ class Bottom(models.Model):
 
 class Match(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
-    top = models.ForeignKey(Top, on_delete=models.CASCADE)
-    bottom = models.ForeignKey(Bottom, on_delete=models.CASCADE)
+    tops = models.ManyToManyField(Top)
+    bottoms = models.ManyToManyField(Bottom)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import django_on_heroku
 import os
 from pathlib import Path
 import environ
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'L_Art_du_Style.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,14 +82,13 @@ WSGI_APPLICATION = 'L_Art_du_Style.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'woonchanjung/project',
+        'NAME': 'woonchanjung/l-art-du-style',
         'USER': 'woonchanjung',
         'PASSWORD': os.environ['DB_PASSWORD'],
         'HOST': 'db.bit.io',
         'PORT': '5432',
     }
 }
-
 
 
 # Password validation
@@ -109,22 +109,15 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.getenv('S3_BUCKET')
-AWS_S3_REGION_NAME = 'us-west-2'
+# Use Amazon S3 for static files
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET']
+AWS_S3_REGION_NAME = 'us-west-2'  
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
 
-AWS_DEFAULT_ACL = 'public-read'
-AWS_QUERYSTRING_AUTH = False
 
-STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+# Use Amazon S3 for media files
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Internationalization
@@ -142,8 +135,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+
 
 # Add this variable to specify where successful logins should redirect to
 LOGIN_REDIRECT_URL = '/'
@@ -158,5 +153,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Other settings above
 # Configure Django App for Heroku.
-import django_on_heroku
 django_on_heroku.settings(locals())

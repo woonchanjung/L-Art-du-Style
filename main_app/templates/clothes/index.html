@@ -3,16 +3,23 @@
 <p>Discover the perfect combination of top and bottom clothing items.</p>
 
 <h1>My Closet</h1>
+
 {% if tops %}
-<h2>Tops:</h2>
-<div>
+<div class="category">
+  <h2>Tops:</h2>
+</div>
+<div class="card-container">
   {% for top in tops %}
-  <div class="clothing-item">
+  <div class="card-item card-top">
     <img src="{{ top.image }}" alt="Top Image" width="200" />
     <p>{{ top }}</p>
     <div>
       <a href="{% url 'edit_top' top.pk %}">Edit</a>
-      <form action="{% url 'delete_top' top.pk %}" method="post" style="display: inline;">
+      <form
+        action="{% url 'delete_top' top.pk %}"
+        method="post"
+        style="display: inline"
+      >
         {% csrf_token %}
         <input type="submit" value="Delete" />
       </form>
@@ -20,17 +27,22 @@
   </div>
   {% endfor %}
 </div>
-{% endif %} 
-{% if bottoms %}
-<h2>Bottoms:</h2>
-<div>
+{% endif %} {% if bottoms %}
+<div class="category">
+  <h2>Bottoms:</h2>
+</div>
+<div class="card-container">
   {% for bottom in bottoms %}
-  <div class="clothing-item">
+  <div class="card-item card-bottom">
     <img src="{{ bottom.image }}" alt="Bottom Image" width="200" />
     <p>{{ bottom }}</p>
     <div>
       <a href="{% url 'edit_bottom' bottom.pk %}">Edit</a>
-      <form action="{% url 'delete_bottom' bottom.pk %}" method="post" style="display: inline;">
+      <form
+        action="{% url 'delete_bottom' bottom.pk %}"
+        method="post"
+        style="display: inline"
+      >
         {% csrf_token %}
         <input type="submit" value="Delete" />
       </form>
@@ -44,4 +56,53 @@
 <a href="{% url 'upload_bottom' %}">Upload Bottom</a>/
 <a href="{% url 'create_match' %}">Create Match</a>/
 <a href="{% url 'view_matches' %}">View Matches</a>
+
+<style>
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .card-top {
+    background-color: #f0f0f0;
+  }
+
+  .card-bottom {
+    background-color: #eaf2f8;
+  }
+
+  .card-item {
+    width: 200px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .card-item img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .card-item p {
+    margin-top: 10px;
+  }
+
+  .card-item div {
+    margin-top: 20px;
+  }
+
+  .card-item div a,
+  .card-item div form {
+    margin-right: 10px;
+  }
+
+  .category {
+    margin-bottom: 20px;
+  }
+</style>
+
 {% endblock %}

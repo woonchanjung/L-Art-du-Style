@@ -11,6 +11,7 @@ from .forms import TopForm, BottomForm
 from .models import Top, Bottom, Match
 from django.contrib import messages
 
+
 def home(request):
     return render(request, 'home.html')
 
@@ -93,21 +94,29 @@ def upload_bottom(request):
 
 @login_required
 def create_match(request):
-    if request.method == 'POST':
-        top_id = request.POST.get('top')
-        bottom_id = request.POST.get('bottom')
-        
-        if top_id and bottom_id:
+    user_tops = Top.objects.filter(user=request.user)
+    user_bottoms = Bottom.objects.filter(user=request.user)
+
+    if user_tops.exists() and user_bottoms.exists():
+        if request.method == 'POST':
+            top_id = request.POST.get('top')
+            bottom_id = request.POST.get('bottom')
             top = get_object_or_404(Top, id=top_id, user=request.user)
             bottom = get_object_or_404(Bottom, id=bottom_id, user=request.user)
-            messages.success(request, 'Match created successfully!')
-            return redirect('index')
+
+            match = Match(user=request.user, top=top, bottom=bottom)
+            match.save()
+
+            return redirect('view_matches')
         else:
-            messages.error(request, 'Please select a top and a bottom.')
-    
-    tops = Top.objects.filter(user=request.user)
-    bottoms = Bottom.objects.filter(user=request.user)
-    return render(request, 'clothes/create_match.html', {'tops': tops, 'bottoms': bottoms})
+            tops = Top.objects.filter(user=request.user)
+            bottoms = Bottom.objects.filter(user=request.user)
+            return render(request, 'clothes/create_match.html', {'tops': tops, 'bottoms': bottoms})
+    else:
+        message = "Please upload at least one top and one bottom to create a match."
+        return render(request, 'clothes/create_match.html', {'message': message})
+
+
 
 @login_required
 def view_matches(request, message=None):
@@ -194,4 +203,3 @@ def edit_bottom(request, bottom_id):
     else:
         form = BottomForm(instance=bottom)
     return render(request, 'clothes/edit_bottom.html', {'form': form, 'bottom': bottom})
-

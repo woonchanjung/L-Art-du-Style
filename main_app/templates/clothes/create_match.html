@@ -8,9 +8,10 @@
 <form method="post">
   {% csrf_token %}
   <div class="card-container">
-    <h2>Select a Top:</h2>
-    <p id="selected-top">No top selected.</p>
-    <p>Tops count: {{ tops.count }}</p>
+    <div class="category">
+      <h2 class="category-title">Select a Top:</h2>
+    </div>
+    
     {% for top in tops %}
     <label class="card-item card-top" onclick="selectTop(this)">
       <input
@@ -27,8 +28,7 @@
 
   <div class="card-container">
     <h2>Select a Bottom:</h2>
-    <p id="selected-bottom">No bottom selected.</p>
-    <p>Bottoms count: {{ bottoms.count }}</p>
+
     {% for bottom in bottoms %}
     <label class="card-item card-bottom" onclick="selectBottom(this)">
       <input
@@ -42,7 +42,8 @@
     </label>
     {% endfor %}
   </div>
-
+  <p id="selected-top">No top selected.</p>
+  <p id="selected-bottom">No bottom selected.</p>
   <input type="submit" value="Create Match" />
 </form>
 {% endif %}

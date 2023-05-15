@@ -22,24 +22,21 @@
       type="text/css"
       href="{% static 'css/style.css' %}"
     />
-  </head>
-  <body>
     <header class="navbar-fixed">
       <nav class="nav-background">
         <div class="nav-wrapper">
-          <ul>
-            <li>
-              <a href="{% url 'about' %}" class="left brand-logo">
-                <img
-                  src="{% static 'images/LogoFinalOne.svg' %}"
-                  alt="Logo"
-                  class="logo-navbar logo-small"
-                />
-                L'Art du Style
-              </a>
-            </li>
-          </ul>
-          <ul class="right">
+          <a href="{% url 'about' %}" class="brand-logo left">
+            <img
+              src="{% static 'images/LogoFinalOne.svg' %}"
+              alt="Logo"
+              class="logo-navbar logo-small"
+            />
+            L'Art du Style
+          </a>
+          <a href="#" data-target="mobile-nav" class="sidenav-trigger right">
+            <i class="material-icons">MENU</i>
+          </a>
+          <ul class="right hide-on-med-and-down">
             {% if user.is_authenticated %}
             <li><a href="{% url 'index' %}">My Closet</a></li>
             <li><a href="{% url 'upload_top' %}">Upload Top</a></li>
@@ -55,6 +52,24 @@
         </div>
       </nav>
     </header>
+    
+    <ul class="sidenav" id="mobile-nav">
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'index' %}">My Closet</a></li>
+      <li><a href="{% url 'upload_top' %}">Upload Top</a></li>
+      <li><a href="{% url 'upload_bottom' %}">Upload Bottom</a></li>
+      <li><a href="{% url 'create_match' %}">Create Match</a></li>
+      <li><a href="{% url 'view_matches' %}">View Matches</a></li>
+      <li><a href="{% url 'logout' %}">Log Out</a></li>
+      {% else %}
+      <li><a href="{% url 'signup' %}">Sign Up</a></li>
+      <li><a href="{% url 'login' %}">Log In</a></li>
+      {% endif %}
+    </ul>
+    
+        </div>
+      </nav>
+    </header>
     <main class="container">{% block content %} {% endblock %}</main>
     <footer class="page-footer">
       <div class="right">
@@ -63,3 +78,10 @@
     </footer>
   </body>
 </html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems);
+  });
+</script>

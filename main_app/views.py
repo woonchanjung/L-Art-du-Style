@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .forms import TopForm, BottomForm
 from .models import Top, Bottom, Match
-from django.contrib import messages
 
 
 def home(request):

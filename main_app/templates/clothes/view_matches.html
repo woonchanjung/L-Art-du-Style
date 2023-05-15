@@ -9,29 +9,25 @@
     <div class="match-item">
       <div class="top-item">
         <img src="{{ match.top.image }}" alt="Top Image" width="200" />
-        <p>{{ match.top }}</p>
       </div>
       <div class="bottom-item">
-        <img
-          src="{{ match.bottom.image }}"
-          alt="Bottom Image"
-          width="200"
-        />
-        <p>{{ match.bottom }}</p>
+        <img src="{{ match.bottom.image }}" alt="Bottom Image" width="200" />
       </div>
     </div>
   </li>
   <div>
+    <p>{{ match.top }}</p>
+    <p>{{ match.bottom }}</p>
     <p>{{ match }}</p>
     <form action="{% url 'delete_match' match.pk %}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Delete Match">
+      {% csrf_token %}
+      <input type="submit" value="Delete Match" />
     </form>
-</div>
+  </div>
 
   {% endfor %}
 </ul>
 {% else %}
 <p>No matches found.</p>
-{% endif %} 
-{% endblock %}
+{% endif %} {% endblock %}
+

@@ -141,10 +141,10 @@ MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
 
 # Add this variable to specify where successful logins should redirect to
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/about/'
 
 # Add this variable to specify where logging out redirects to
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/about/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

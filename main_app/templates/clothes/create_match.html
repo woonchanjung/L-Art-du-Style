@@ -5,39 +5,74 @@
   {% if message %}
     <p>{{ message }}</p>
   {% else %}
-    <form method="post">
-      {% csrf_token %}
+    <div id="carousel-top-container">
       <h2>Select a Top:</h2>
       <p id="selected-top">No top selected.</p>
       <p>Tops count: {{ tops.count }}</p>
-      {% for top in tops %}
-        <div class="clothing-item">
-          <label>
-            <input type="radio" id="top{{ top.pk }}" name="top" value="{{ top.pk }}" onclick="selectTop('Top #{{ top.pk }}')">
+      <div class="carousel">
+        {% for top in tops %}
+          <a class="carousel-item" href="#{{ top.pk }}" onclick="selectTop('Top #{{ top.pk }}')">
             <img src="{{ top.image }}" alt="Top Image" width="200">
             {{ top }}
-          </label>
-        </div>
-      {% endfor %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
 
+    <div id="carousel-bottom-container">
       <h2>Select a Bottom:</h2>
       <p id="selected-bottom">No bottom selected.</p>
       <p>Bottoms count: {{ bottoms.count }}</p>
-      {% for bottom in bottoms %}
-        <div class="clothing-item">
-          <label>
-            <input type="radio" id="bottom{{ bottom.pk }}" name="bottom" value="{{ bottom.pk }}" onclick="selectBottom('Bottom #{{ bottom.pk }}')">
+      <div class="carousel">
+        {% for bottom in bottoms %}
+          <a class="carousel-item" href="#{{ bottom.pk }}" onclick="selectBottom('Bottom #{{ bottom.pk }}')">
             <img src="{{ bottom.image }}" alt="Bottom Image" width="200">
             {{ bottom }}
-          </label>
-        </div>
-      {% endfor %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
 
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="top" id="selected-top-input">
+      <input type="hidden" name="bottom" id="selected-bottom-input">
       <input type="submit" value="Create Match">
     </form>
   {% endif %}
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var carouselTopElems = document.querySelectorAll('#carousel-top-container .carousel');
+      var carouselTopInstances = M.Carousel.init(carouselTopElems, {
+        fullWidth: true,
+        indicators: true
+      });
+
+      var carouselBottomElems = document.querySelectorAll('#carousel-bottom-container .carousel');
+      var carouselBottomInstances = M.Carousel.init(carouselBottomElems, {
+        fullWidth: true,
+        indicators: true
+      });
+
+      var form = document.querySelector('form');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        // Add your code to handle the form submission here
+        // You can access the selected top and bottom using the form elements
+        var selectedTop = form.querySelector('input[name="top"]:checked');
+        var selectedBottom = form.querySelector('input[name="bottom"]:checked');
+        // Set the values of the hidden inputs
+        document.getElementById('selected-top-input').value = selectedTop ? selectedTop.value : '';
+        document.getElementById('selected-bottom-input').value = selectedBottom ? selectedBottom.value : '';
+        // Perform any necessary validation or processing
+        // Then submit the form using JavaScript if needed
+        form.submit();
+      });
+    });
+
     function selectTop(top) {
       document.getElementById('selected-top').innerText = 'Selected: ' + top;
     }

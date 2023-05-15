@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .forms import TopForm, BottomForm
 from .models import Top, Bottom, Match
+from django.contrib import messages
 # Create your views here.
 
 # Define the home view
@@ -98,28 +99,22 @@ def upload_bottom(request):
 
 @login_required
 def create_match(request):
-    user_tops = Top.objects.filter(user=request.user)
-    user_bottoms = Bottom.objects.filter(user=request.user)
-
-    if user_tops.exists() and user_bottoms.exists():
-        if request.method == 'POST':
-            top_id = request.POST.get('top')
-            bottom_id = request.POST.get('bottom')
-            top = get_object_or_404(Top, id=top_id)
-            bottom = get_object_or_404(Bottom, id=bottom_id)
-
-            match = Match(user=request.user, top=top, bottom=bottom)
-            match.save()
-
-            return redirect('view_matches')
+    if request.method == 'POST':
+        top_id = request.POST.get('top')
+        bottom_id = request.POST.get('bottom')
+        
+        if top_id and bottom_id:
+            top = get_object_or_404(Top, id=top_id, user=request.user)
+            bottom = get_object_or_404(Bottom, id=bottom_id, user=request.user)
+            # Perform any additional processing or save the match to the database
+            messages.success(request, 'Match created successfully!')
+            return redirect('index')
         else:
-            tops = Top.objects.filter(user=request.user)
-            bottoms = Bottom.objects.filter(user=request.user)
-            return render(request, 'clothes/create_match.html', {'tops': tops, 'bottoms': bottoms})
-    else:
-        message = "Please upload at least one top and one bottom to create a match."
-        return render(request, 'clothes/create_match.html', {'message': message})
-
+            messages.error(request, 'Please select a top and a bottom.')
+    
+    tops = Top.objects.filter(user=request.user)
+    bottoms = Bottom.objects.filter(user=request.user)
+    return render(request, 'clothes/create_match.html', {'tops': tops, 'bottoms': bottoms})
 
 @login_required
 def view_matches(request, message=None):

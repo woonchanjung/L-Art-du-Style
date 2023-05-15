@@ -12,6 +12,11 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
     />
     <link
+      rel="icon"
+      href="{% static 'images/LogoFinalOne.svg' %}"
+      type="image/svg+xml"
+    />
+    <link
       rel="stylesheet"
       type="text/css"
       href="{% static 'css/style.css' %}"
@@ -20,17 +25,21 @@
   </head>
   <body>
     <header class="navbar-fixed">
-      <nav>
+      <nav class="nav-background">
         <div class="nav-wrapper">
           <ul>
             <li>
-              <a href="{% url 'home' %}" class="left brand-logo"
-                >&nbsp;&nbsp;L'Art du Style</a
-              >
+              <a href="{% url 'about' %}" class="left brand-logo">
+                <img
+                  src="{% static 'images/LogoFinalOne.svg' %}"
+                  alt="Logo"
+                  class="logo-navbar logo-small"
+                />
+                L'Art du Style
+              </a>
             </li>
           </ul>
           <ul class="right">
-            <li><a href="{% url 'about' %}">About</a></li>
             {% if user.is_authenticated %}
             <li><a href="{% url 'index' %}">My Closet</a></li>
             <li><a href="{% url 'upload_top' %}">Upload Top</a></li>

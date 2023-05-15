@@ -1,53 +1,56 @@
 {% extends 'base.html' %} {% block content %}
+
 <h1>Create a Match</h1>
 
 {% if message %}
 <p>{{ message }}</p>
 {% else %}
-<div class="category">
-  <h2>Select a Top:</h2>
-</div>
-<div class="card-container">
-  {% for top in tops %}
-  <div class="card-item card-top" onclick="selectTop('Top #{{ top.pk }}')">
-    <img src="{{ top.image }}" alt="Top Image" width="200" />
-    {{ top }}
-  </div>
-  {% endfor %}
-</div>
-
-<div class="category">
-  <h2>Select a Bottom:</h2>
-</div>
-<div class="card-container">
-  {% for bottom in bottoms %}
-  <div
-    class="card-item card-bottom"
-    onclick="selectBottom('Bottom #{{ bottom.pk }}')"
-  >
-    <img src="{{ bottom.image }}" alt="Bottom Image" width="200" />
-    {{ bottom }}
-  </div>
-  {% endfor %}
-</div>
-
 <form method="post">
   {% csrf_token %}
-  <input type="hidden" name="top" id="selected-top-input" />
-  <input type="hidden" name="bottom" id="selected-bottom-input" />
+  <div class="card-container">
+    <h2>Select a Top:</h2>
+    <p id="selected-top">No top selected.</p>
+    <p>Tops count: {{ tops.count }}</p>
+    {% for top in tops %}
+    <label class="card-item card-top" onclick="selectTop(this)">
+      <input
+        type="radio"
+        id="top{{ top.pk }}"
+        name="top"
+        value="{{ top.pk }}"
+      />
+      <img src="{{ top.image }}" alt="Top Image" width="200" />
+      {{ top }}
+    </label>
+    {% endfor %}
+  </div>
+
+  <div class="card-container">
+    <h2>Select a Bottom:</h2>
+    <p id="selected-bottom">No bottom selected.</p>
+    <p>Bottoms count: {{ bottoms.count }}</p>
+    {% for bottom in bottoms %}
+    <label class="card-item card-bottom" onclick="selectBottom(this)">
+      <input
+        type="radio"
+        id="bottom{{ bottom.pk }}"
+        name="bottom"
+        value="{{ bottom.pk }}"
+      />
+      <img src="{{ bottom.image }}" alt="Bottom Image" width="200" />
+      {{ bottom }}
+    </label>
+    {% endfor %}
+  </div>
+
   <input type="submit" value="Create Match" />
 </form>
 {% endif %}
 
 <style>
-  .category {
-    margin-bottom: 20px; /* Add spacing between categories */
-  }
-
   .card-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
   }
 
   .card-item {
@@ -65,11 +68,13 @@
     border-color: #ff0000; /* Update with your selected style */
   }
 
+  /* Hover effect for top items */
   .card-top:hover {
     /* Add your hover styles for top items */
     background-color: #eaf2f8;
   }
 
+  /* Hover effect for bottom items */
   .card-bottom:hover {
     /* Add your hover styles for bottom items */
     background-color: #f8f1ea;

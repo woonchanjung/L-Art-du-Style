@@ -3,7 +3,6 @@
 
 <h1>Log In</h1>
 
-<!-- Add the login form -->
 <form method="POST" action="{% url 'login' %}">
   {% csrf_token %}
   {{ form.as_p }}

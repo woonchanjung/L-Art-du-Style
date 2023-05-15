@@ -59,16 +59,11 @@
 
       var form = document.querySelector('form');
       form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-        // Add your code to handle the form submission here
-        // You can access the selected top and bottom using the form elements
+        event.preventDefault(); 
         var selectedTop = form.querySelector('input[name="top"]:checked');
         var selectedBottom = form.querySelector('input[name="bottom"]:checked');
-        // Set the values of the hidden inputs
         document.getElementById('selected-top-input').value = selectedTop ? selectedTop.value : '';
         document.getElementById('selected-bottom-input').value = selectedBottom ? selectedBottom.value : '';
-        // Perform any necessary validation or processing
-        // Then submit the form using JavaScript if needed
         form.submit();
       });
     });

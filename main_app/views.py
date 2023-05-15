@@ -5,19 +5,13 @@ import imghdr
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-# Import the login_required decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .forms import TopForm, BottomForm
 from .models import Top, Bottom, Match
 from django.contrib import messages
-# Create your views here.
-
-# Define the home view
-
 
 def home(request):
-    # Include an .html file extension - unlike when rendering EJS templates
     return render(request, 'home.html')
 
 
@@ -106,7 +100,6 @@ def create_match(request):
         if top_id and bottom_id:
             top = get_object_or_404(Top, id=top_id, user=request.user)
             bottom = get_object_or_404(Bottom, id=bottom_id, user=request.user)
-            # Perform any additional processing or save the match to the database
             messages.success(request, 'Match created successfully!')
             return redirect('index')
         else:
@@ -125,18 +118,13 @@ def view_matches(request, message=None):
 def signup(request):
     error_message = ''
     if request.method == 'POST':
-        # This is how to create a 'user' form object
-        # that includes the data from the browser
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            # This will add the user to the database
             user = form.save()
-            # This is how we log a user in via code
             login(request, user)
             return redirect('index')
         else:
             error_message = 'Invalid sign up - try again'
-    # A bad POST or a GET request, so render signup.html with an empty form
     form = UserCreationForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
@@ -146,7 +134,6 @@ def signup(request):
 def delete_top(request, top_id):
     top = get_object_or_404(Top, id=top_id)
     if request.user == top.user:
-        # Delete the image from S3
         s3 = boto3.client('s3')
         key = top.image.url.split('/')[-1]
         bucket = os.environ['S3_BUCKET']
@@ -163,7 +150,6 @@ def delete_top(request, top_id):
 def delete_bottom(request, bottom_id):
     bottom = get_object_or_404(Bottom, id=bottom_id)
     if request.user == bottom.user:
-        # Delete the image from S3
         s3 = boto3.client('s3')
         key = bottom.image.url.split('/')[-1]
         bucket = os.environ['S3_BUCKET']

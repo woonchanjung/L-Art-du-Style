@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Top, Bottom
+from .models import Top, Bottom, Match
 
-# Register your models here.
 admin.site.register(Top)
 admin.site.register(Bottom)
+admin.site.register(Match)

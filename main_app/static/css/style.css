@@ -11,18 +11,7 @@ main {
 footer.page-footer {
   padding-top: 0;
   text-align: right;
-}
-
-.logo-about {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-}
-
-@media (max-width: 768px) {
-  .logo-about {
-    max-width: 200px;
-  }
+  background-color: #f8bbd0 ;
 }
 
 .logo-small {
